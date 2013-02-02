@@ -39,22 +39,24 @@ void Com_DB_InitGameTest()
 	dbuser = sv_dbUsername->string;
 	dbpass = sv_dbPassword->string;
 
+	MYSQL *conn;
+	MYSQL_RES *res;
+	MYSQL_ROW row;
+
 	/* This tests that the database can be reached and login succeeds */
 	if ( use_db == 1 ) {
-		MYSQL *connect;
-		connect=mysql_init(NULL);
-		if(!connect)
-		{
+		conn=mysql_init(NULL);
+		if(!mysql_real_connect(conn,dbhost,dbuser,dbpass,dbname,0,NULL,0)) {
 			Com_Printf("Database Initialization Failed.\n");
-			Cvar_Set("sv_dbReady","0");
+			Com_Printf("Database Error: %s\n",mysql_error(conn));
 		} else{
-			/* TODO: Add login */
+			Com_Printf("Database Client Version: %s\n",mysql_get_client_info());
+			Com_Printf("Database Server Version: %s\n",mysql_get_server_info(conn));
 			Com_Printf("Database Initialized.\n");
 			Cvar_Set("sv_dbReady","1");
 		}
 	} else {
 		Com_Printf("Database Disabled in Server Configuration.\n");
-		Cvar_Set("sv_dbReady","0");
 	}
 
 	Com_Printf("Database Test Complete.\n");
