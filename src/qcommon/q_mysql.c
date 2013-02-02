@@ -14,6 +14,28 @@ cvar_t *sv_dbDatabase;
 cvar_t *sv_dbUsername;
 cvar_t *sv_dbPassword;
 
+int Com_DB_Ready()
+{
+	int db_ready;
+
+	cvar_t *dbTest = Cvar_Get("sv_dbReady", "0", CVAR_SERVERINFO | CVAR_ROM);
+	db_ready = dbTest->integer;
+
+	return db_ready;
+}
+
+void Com_DB_SetMap(char *server)
+{
+	Com_Printf("Setting Map to %s in database.\n",server);
+	return;
+}
+
+void Com_DB_ResetMap()
+{
+	Com_Printf("Reset Map in database.\n");
+	return;
+}
+
 void Com_DB_InitGameTest()
 {
 	Com_Printf("------ Database Test ------\n");

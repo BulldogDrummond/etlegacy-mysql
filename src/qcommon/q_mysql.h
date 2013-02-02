@@ -31,7 +31,10 @@ extern cvar_t *sv_dbDatabase;
 extern cvar_t *sv_dbUsername;
 extern cvar_t *sv_dbPassword;
 
+int Com_DB_Ready();
 void Com_DB_InitGameTest();
+void Com_DB_SetMap(char *server);
+void Com_DB_ResetMap();
 
 #endif /* ifdef FEATURE_MYSQL */
 

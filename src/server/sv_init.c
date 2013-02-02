@@ -322,9 +322,10 @@ void SV_Startup(void)
 
 #ifdef FEATURE_MYSQL
 	Com_DB_InitGameTest();
-	cvar_t *dbTest = Cvar_Get("sv_dbReady", "0", CVAR_SERVERINFO | CVAR_ROM);
-	if (dbTest->integer == 0) {
+	if (Com_DB_Ready() == 0) {
 		Com_Printf("Database Functions Disabled.\n");
+	} else {
+		Com_Printf("Database Functions Enabled.\n");
 	}
 #endif /* FEATURE_MYSQL */
 
@@ -747,6 +748,12 @@ void SV_SpawnServer(char *server)
 	Hunk_SetMark();
 
 	SV_UpdateConfigStrings();
+
+#ifdef FEATURE_MYSQL
+        if (Com_DB_Ready()) {
+                Com_DB_SetMap(server);
+        }
+#endif /* FEATURE_MYSQL */
 
 	Com_Printf("-----------------------------------\n");
 }

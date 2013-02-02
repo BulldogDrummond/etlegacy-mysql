@@ -637,6 +637,11 @@ void SV_ShutdownGameProgs(void)
 	VM_Call(gvm, GAME_SHUTDOWN, qfalse);
 	VM_Free(gvm);
 	gvm = NULL;
+#ifdef FEATURE_MYSQL
+	if (Com_DB_Ready()) {
+		Com_DB_ResetMap();
+	}
+#endif /* FEATURE_MYSQL */
 }
 
 /*
