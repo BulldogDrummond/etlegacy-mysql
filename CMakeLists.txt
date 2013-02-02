@@ -64,6 +64,7 @@ option(FEATURE_OPENAL		"Enable OpenAL sound backend (client)"						OFF)
 option(FEATURE_FREETYPE		"Enable Freetype font library support (client)"				OFF)
 option(FEATURE_TRACKBASE	"Enable extended server statistics (server)"				ON)
 option(FEATURE_LUA			"Enable Lua support in game code"							ON)
+option(FEATURE_MYSQL		"Enable MySQL support in server code" 					OFF)
 option(FEATURE_MULTIVIEW	"Compile the mod files with multiview support (broken?!)"	OFF)
 option(FEATURE_ANTICHEAT	"Enable server side anti-wallhack code (experimental)"		ON)
 option(FEATURE_CURSES		"Enable PDCurses console"									OFF)
@@ -185,6 +186,10 @@ FILE(GLOB SERVER_SRC
 	"src/sys/con_log.c"
 	"src/qcommon/dl_main_stubs.c"
 )
+
+if(MYSQL_FOUND)
+	LIST(APPEND SERVER_SRC "src/qcommon/q_mysql.c")
+endif(MYSQL_FOUND)
 
 FILE(GLOB CLIENT_SRC
 	"src/server/*.c"
@@ -401,6 +406,15 @@ if(FEATURE_ANTICHEAT)
 	add_definitions(-DFEATURE_ANTICHEAT)
 endif(FEATURE_ANTICHEAT)
 
+if(FEATURE_MYSQL)
+	find_package(Mysql REQUIRED)
+	list(APPEND SERVER_LIBRARIES ${MYSQL_LIBRARY})
+	list(APPEND SERVER_LIBRARIES ${MYSQL_EXTRA_LIBRARIES})
+	list(APPEND SERVER_INCLUDE_DIRS ${MYSQL_INCLUDE_DIR})
+	add_definitions(-DFEATURE_MYSQL)
+	message("-- Added MySQL Includes and Client Lib to Server.")
+endif(FEATURE_MYSQL)
+
 if(FEATURE_CURSES)
 	find_package(Curses REQUIRED)
 	set(CURSES_NEED_NCURSES 1) # Tells FindCurses that ncurses is required
@@ -442,6 +456,9 @@ if(BUILD_CLIENT)
 endif(BUILD_CLIENT)
 
 if(BUILD_SERVER)
+	message("-- Server Incl Dirs: ${SERVER_INCLUDE_DIRS}")
+	message("-- Server Libraries: ${SERVER_LIBRARIES}")
+	include_directories(${SERVER_INCLUDE_DIRS})
 	add_executable(etlded WIN32 ${COMMON_SRC} ${SERVER_SRC} ${PLATFORM_SRC})
 	target_link_libraries(etlded ${OS_LIBRARIES} ${SERVER_LIBRARIES})
 	set_target_properties(etlded PROPERTIES COMPILE_DEFINITIONS "DEDICATED")

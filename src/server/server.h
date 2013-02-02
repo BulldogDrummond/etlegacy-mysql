@@ -351,6 +351,10 @@ extern cvar_t *sv_showAverageBPS;           // net debugging
 
 extern cvar_t *g_gameType;
 
+#ifdef FEATURE_MYSQL
+extern cvar_t *sv_dbReady;  // Set true if connection tests pass
+#endif /* FEATURE_MYSQL */
+
 // autodl
 extern cvar_t *sv_dl_maxRate;
 extern cvar_t *sv_dl_timeout;

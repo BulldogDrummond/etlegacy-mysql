@@ -319,6 +319,15 @@ void SV_Startup(void)
 #ifdef FEATURE_TRACKBASE
 	TB_ServerStart();
 #endif
+
+#ifdef FEATURE_MYSQL
+	Com_DB_InitGameTest();
+	cvar_t *dbTest = Cvar_Get("sv_dbReady", "0", CVAR_SERVERINFO | CVAR_ROM);
+	if (dbTest->integer == 0) {
+		Com_Printf("Database Init Test Failed - Database Functions Disabled\n");
+	}
+#endif /* FEATURE_MYSQL */
+
 }
 
 /*
