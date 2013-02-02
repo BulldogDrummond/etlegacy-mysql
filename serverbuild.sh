@@ -6,8 +6,10 @@ _SRC=`pwd`
 BUILDDIR="${_SRC}/build"
 
 # Start fresh every build
-if [ -d $BUILDDIR ]; then
-  rm -rf $BUILDDIR
+if [ ${1} -ne "rebuild" ]; then
+  if [ -d $BUILDDIR ]; then
+    rm -rf $BUILDDIR
+  fi
 fi
 
 HACK_CSTDIO=1

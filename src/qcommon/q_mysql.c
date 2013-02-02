@@ -52,8 +52,19 @@ void Com_DB_InitGameTest()
 		} else{
 			Com_Printf("Database Client Version: %s\n",mysql_get_client_info());
 			Com_Printf("Database Server Version: %s\n",mysql_get_server_info(conn));
-			Com_Printf("Database Initialized.\n");
-			Cvar_Set("sv_dbReady","1");
+			// Read from table
+			if (mysql_query(conn, "SELECT ss_val FROM server_status WHERE ss_key = \"DB_Test\"")) {
+				Com_Printf("Database Status: %s\n", mysql_error(conn));
+				Cvar_Set("sv_dbReady","0");
+			} else {
+				res = mysql_use_result(conn);
+				while ((row = mysql_fetch_row(res)) != NULL)
+					Com_Printf("Database Query Result: %s \n", row[0]);
+				mysql_free_result(res);
+				mysql_close(conn);
+				Com_Printf("Database Initialized.\n");
+				Cvar_Set("sv_dbReady","1");
+			}
 		}
 	} else {
 		Com_Printf("Database Disabled in Server Configuration.\n");
