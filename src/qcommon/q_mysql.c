@@ -6,6 +6,8 @@
 #ifdef FEATURE_MYSQL
 
 #include "q_mysql.h"
+#include <stdio.h>
+#include <strings.h>
 
 // Cvars
 cvar_t *sv_dbEnable;
@@ -26,13 +28,79 @@ int Com_DB_Ready()
 
 void Com_DB_SetMap(char *server)
 {
+	sv_dbHostname = Cvar_Get("db_hostname", "",  CVAR_TEMP);
+	sv_dbDatabase = Cvar_Get("db_database", "",  CVAR_TEMP);
+	sv_dbUsername = Cvar_Get("db_username", "",  CVAR_TEMP);
+	sv_dbPassword = Cvar_Get("db_password", "",  CVAR_TEMP);
+
+	char *dbhost;
+	char *dbname;
+	char *dbuser;
+	char *dbpass;
+
+	dbhost = sv_dbHostname->string;
+	dbname = sv_dbDatabase->string;
+	dbuser = sv_dbUsername->string;
+	dbpass = sv_dbPassword->string;
+
+	MYSQL *conn;
+	MYSQL_RES *res;
+
+	char query[100];
+
 	Com_Printf("Setting Map to %s in database.\n",server);
+	sprintf(query,"UPDATE server_status SET ss_val = \"%s\" WHERE ss_key = \"Current_Map\"",server);
+
+	conn=mysql_init(NULL);
+
+	if(!mysql_real_connect(conn,dbhost,dbuser,dbpass,dbname,0,NULL,0)) {
+		Com_Printf("Database Error: %s\n",mysql_error(conn));
+	} else {
+		if (mysql_query(conn, query)) {
+			Com_Printf("Database Error: %s\n", mysql_error(conn));
+		} else {
+			mysql_close(conn);
+		}
+	}
 	return;
 }
 
 void Com_DB_ResetMap()
 {
-	Com_Printf("Reset Map in database.\n");
+	sv_dbHostname = Cvar_Get("db_hostname", "",  CVAR_TEMP);
+	sv_dbDatabase = Cvar_Get("db_database", "",  CVAR_TEMP);
+	sv_dbUsername = Cvar_Get("db_username", "",  CVAR_TEMP);
+	sv_dbPassword = Cvar_Get("db_password", "",  CVAR_TEMP);
+
+	char *dbhost;
+	char *dbname;
+	char *dbuser;
+	char *dbpass;
+
+	dbhost = sv_dbHostname->string;
+	dbname = sv_dbDatabase->string;
+	dbuser = sv_dbUsername->string;
+	dbpass = sv_dbPassword->string;
+
+	MYSQL *conn;
+	MYSQL_RES *res;
+
+	char query[100];
+
+	Com_Printf("Resetting Map in database.\n");
+	sprintf(query,"UPDATE server_status SET ss_val = \"None\" WHERE ss_key = \"Current_Map\"");
+
+	conn=mysql_init(NULL);
+
+	if(!mysql_real_connect(conn,dbhost,dbuser,dbpass,dbname,0,NULL,0)) {
+		Com_Printf("Database Error: %s\n",mysql_error(conn));
+	} else {
+		if (mysql_query(conn, query)) {
+			Com_Printf("Database Error: %s\n", mysql_error(conn));
+		} else {
+			mysql_close(conn);
+		}
+	}
 	return;
 }
 
