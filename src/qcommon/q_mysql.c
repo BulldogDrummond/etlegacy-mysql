@@ -14,13 +14,13 @@ cvar_t *sv_dbDatabase;
 cvar_t *sv_dbUsername;
 cvar_t *sv_dbPassword;
 
-void Com_MysqlHook_InitGame()
+void Com_DB_InitGame()
 {
 	Com_Printf("------ Database Test ------\n");
 
 	sv_dbEnable   = Cvar_Get("db_enable",   "0", CVAR_TEMP);
 	sv_dbHostname = Cvar_Get("db_hostname", "",  CVAR_TEMP);
-	sv_Database   = Cvar_Get("db_database", "",  CVAR_TEMP);
+	sv_dbDatabase = Cvar_Get("db_database", "",  CVAR_TEMP);
 	sv_dbUsername = Cvar_Get("db_username", "",  CVAR_TEMP);
 	sv_dbPassword = Cvar_Get("db_password", "",  CVAR_TEMP);
 
