@@ -14,7 +14,7 @@ cvar_t *sv_dbDatabase;
 cvar_t *sv_dbUsername;
 cvar_t *sv_dbPassword;
 
-void Com_DB_InitGame()
+void Com_DB_InitGameTest()
 {
 	Com_Printf("------ Database Test ------\n");
 
