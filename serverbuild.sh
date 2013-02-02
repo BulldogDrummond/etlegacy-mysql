@@ -5,6 +5,11 @@ _PREFIX="/opt/wolfet"
 _SRC=`pwd`
 BUILDDIR="${_SRC}/build"
 
+# Start fresh every build
+if [ -d $BUILDDIR ]; then
+  rm -rf $BUILDDIR
+fi
+
 HACK_CSTDIO=1
 
 echo
@@ -41,7 +46,7 @@ _CFGSTRING="
 	-DBUILD_CLIENT=${BUILD_CLIENT}
 	-DBUILD_SERVER=1
 	-DBUILD_MOD=1
-	-DBUILD_MOD_PK3=0
+	-DBUILD_MOD_PK3=1
 	-DBUILD_PAK3_PK3=1
 	-DBUNDLED_SDL=${BUNDLED_SDL}
 	-DBUNDLED_JPEG=${BUNDLED_JPEG}
@@ -63,5 +68,23 @@ cmake ${_CFGSTRING} ..
 
 echo "Compiling ET Legacy..."
 make ${MAKEOPTS}
+
+echo "Installing etlded..."
+cp ${_SRC}/build/etlded ~/bin/
+
+echo "Installing required pk3 and so files..."
+cp ${_SRC}/build/legacy/* ~/data/legacy/
+cp ${_SRC}/build/legacy/*.pk3 ~/www/mod-dl/legacy/
+
+/bin/echo -ne "Run new server? "
+read RUNIT
+
+RUNIT=`echo $RUNIT | tr '[:lower:]' '[:upper:]'`
+
+if [ $RUNIT = "Y" ]; then
+  ~/bin/start-build-test
+fi
+
+# EOF
 
 
